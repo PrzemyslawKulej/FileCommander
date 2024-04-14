@@ -11,20 +11,23 @@ const fs = require("node:fs/promises");
 
       const offset = 0;
       // how many bytes we want to read 
-      const length = size;
+      const length = buff.byteLength;
       // the position that we want to start reading the file form
       const position = 0;
 
       // we always want to read the whole content (from being all the way to the end )
 
-      const content = await commandFileHandler.read(
+      await commandFileHandler.read(
         buff,
         offset,
         length,
         position
       );
 
-      console.log(content);
+      // decoder 01 => meaningful
+      // encoder meaningful => 01
+
+      console.log(buff.toString("utf-8"));
     
 });
 

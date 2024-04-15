@@ -27,7 +27,14 @@ const fs = require("node:fs/promises");
       // decoder 01 => meaningful
       // encoder meaningful => 01
 
-      console.log(buff.toString("utf-8"));
+      const command = (buff.toString("utf-8"));
+
+      //create a file 
+      //create a file <path>
+
+      if (command.includes("create a file")){
+        const filePath = command.substring("create a file" + 1);
+      }
     
 });
 

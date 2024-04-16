@@ -1,7 +1,16 @@
 const fs = require("node:fs/promises");
 
 (async () => {
+
+  const createFile = (filePath) => {
+
+  }
+
+
   const commandFileHandler = await fs.open("./command.txt", "r");
+  // commands
+  
+  const CREATE_FILE = "create a file"
 
   commandFileHandler.on("change", async () => {
     const size = (await commandFileHandler.stat()).size;
@@ -29,11 +38,12 @@ const fs = require("node:fs/promises");
 
       const command = (buff.toString("utf-8"));
 
-      //create a file 
+      //create a file  
       //create a file <path>
 
-      if (command.includes("create a file")){
+      if (command.includes(CREATE_FILE)){
         const filePath = command.substring("create a file" + 1);
+        createFile(filePath);
       }
     
 });

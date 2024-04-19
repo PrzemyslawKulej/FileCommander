@@ -1,12 +1,42 @@
 const fs = require("node:fs/promises");
 
-const { writeFile } = require("node:fs/promises");
+
 
 
 (async () => {
 
+  function handleCommand(command, keyword, action) {
+    if (command.includes(keyword)) {
+      const filePath = command.substring(keyword.length + 1).trim();
+      action(filePath);
+    }
+  }
+
+  const CREATE_FILE = "create a file";
+  const DELETE_FILE = "delete a file";
+  const RENAME_FILE = "rename a file";
+  const ADD_TO_FILE = "add to file";
+
   const createFile = async (filePath) =>  {
     
+    try {
+      // we want to check whether or not we already have that file
+      const existingFileHandle = await fs.open(path, "r");
+      existingFileHandel.close();
+      // we already have that file...
+
+      return console.log(`The file ${filePath} already exists.`);
+    } catch (error) {
+      // we don't have the file, now we should create it
+      const newFileHandle = await fs.open(filePath, "w");
+      console.log("A new file was successfully created");
+      newFileHandle.close();
+    }
+
+
+  }
+  const deleteFile = async (filePath) =>  {
+  
     try {
       // we want to check whether or not we already have that file
       const existingFileHandle = await fs.open(path, "r");
@@ -28,7 +58,6 @@ const { writeFile } = require("node:fs/promises");
   const commandFileHandler = await fs.open("./command.txt", "r");
   // commands
   
-  const CREATE_FILE = "create a file";
 
   commandFileHandler.on("change", async () => {
     const size = (await commandFileHandler.stat()).size;
@@ -59,11 +88,18 @@ const { writeFile } = require("node:fs/promises");
       //create a file  
       //create a file <path>
 
-      if (command.includes(CREATE_FILE)){
-        const filePath = command.substring(CREATE_FILE.length + 1).trim();
-        createFile(filePath);
+      handleCommand(command, CREATE_FILE, action);
+      handleCommand(command, DELETE_FILE, action);
+      
+      //rename file
+      // rename the file <path> to <new-path>
+    if (command.includes(RENAME_FILE)) {
+      const _idx = command.indexOf(" to ")
+      const prevPath = command.substring(RENAME_FILE, length + 1, _idx).trim();
+      const nextPath = command.substring(idx + 4)
       }
-    
+      
+    //add to file 
     
 });
 

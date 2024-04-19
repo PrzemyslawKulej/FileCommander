@@ -1,4 +1,2 @@
 
-Yes sdassassdssdsdssdsdsad
-
-dssdfsdfsd
+create a file friends.txt 

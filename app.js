@@ -1,5 +1,8 @@
 const fs = require("node:fs/promises");
 
+const { open, rename, unlink } = require("fs/promises");
+
+
 
 
 
@@ -7,14 +10,15 @@ const fs = require("node:fs/promises");
 
   function handleCommand(command, keyword, action) {
     if (command.includes(keyword)) {
-      const filePath = command.substring(keyword.length + 1).trim();
+      const filePath = command.substring(keyword.length + 2).trim();
+      console.log(filePath);
       action(filePath);
     }
   }
 
   const CREATE_FILE = "create a file";
   const DELETE_FILE = "delete a file";
-  const RENAME_FILE = "rename a file";
+  const RENAME_FILE = "rename the file";
   const ADD_TO_FILE = "add to file";
 
   const createFile = async (filePath) =>  {
@@ -35,23 +39,40 @@ const fs = require("node:fs/promises");
 
 
   }
+
   const deleteFile = async (filePath) =>  {
   
     try {
-      // we want to check whether or not we already have that file
-      const existingFileHandle = await fs.open(path, "r");
-      existingFileHandel.close();
-      // we already have that file...
-
-      return console.log(`The file ${filePath} already exists.`);
+    await unlink(filePath)      
+      console.log(`Deleting ${filePath}...`);
     } catch (error) {
-      // we don't have the file, now we should create it
-      const newFileHandle = await fs.open(filePath, "w");
-      console.log("A new file was successfully created");
-      newFileHandle.close();
+      console.error(`Got an error during deleting the file ${error.message}`);
+    } finally {
+      console.log(`File ${filePath} deleted.`);
     }
 
 
+  }
+
+  const renameFile = async (oldPath, newPath) => {
+    try {
+    await rename(oldPath, newPath)
+    console.log(`Renamed ${oldPath} to ${newPath}`);
+  } catch (error) {
+    console.error(`Got an error trying to rename the file: ${error.message}`);
+  }
+}
+
+  const addToFile = async (filePath, data) => {
+    try {
+      const file = await open(filePath, 'w');
+      await file.write(data);
+      console.log(`Adding ${filePath}`);
+    } catch (error) {
+      console.error
+    } finally {
+      console.log(`Data: ${data}`);
+    }
   }
 
 
@@ -87,19 +108,25 @@ const fs = require("node:fs/promises");
 
       //create a file  
       //create a file <path>
-
-      handleCommand(command, CREATE_FILE, action);
-      handleCommand(command, DELETE_FILE, action);
       
-      //rename file
-      // rename the file <path> to <new-path>
-    if (command.includes(RENAME_FILE)) {
-      const _idx = command.indexOf(" to ")
-      const prevPath = command.substring(RENAME_FILE, length + 1, _idx).trim();
-      const nextPath = command.substring(idx + 4)
+      handleCommand(command, CREATE_FILE, createFile);
+      handleCommand(command, DELETE_FILE, deleteFile);
+      
+       // rename the file <path> to <new-path>
+       if (command.includes(RENAME_FILE)) {
+        const _idx = command.indexOf(" to ")
+        const oldPath = command.substring(RENAME_FILE.length + 2, _idx).trim();
+        const newPath = command.substring(_idx + 4).trim();
+        renameFile(oldPath, newPath);
       }
       
-    //add to file 
+    //add to file <path>
+    if (command.includes(ADD_TO_FILE)) {
+      const pathName = command.substring(RENAME_FILE.length + 2).trim();
+      const data = command.substring(RENAME_FILE.length)
+      addToFile(pathName, data);      
+    }
+    
     
 });
 

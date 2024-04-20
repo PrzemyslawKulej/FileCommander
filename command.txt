@@ -1,2 +1,2 @@
 
-create a file friends.txt 
+ add to file baals.txt adafad 

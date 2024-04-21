@@ -65,7 +65,7 @@ const { open, rename, unlink } = require("fs/promises");
 
   const addToFile = async (filePath, data) => {
     try {
-      const file = await open(filePath, 'w');
+      const file = await open(filePath, 'a');
       await file.write(data);
       console.log(`Adding ${filePath}`);
     } catch (error) {
@@ -121,11 +121,18 @@ const { open, rename, unlink } = require("fs/promises");
       }
       
     //add to file <path>
-    if (command.includes(ADD_TO_FILE)) {
-      const pathName = command.substring(RENAME_FILE.length + 2).trim();
-      const data = command.substring(RENAME_FILE.length)
-      addToFile(pathName, data);      
-    }
+    if (command.startsWith(ADD_TO_FILE)) {
+      const content = command.substring(ADD_TO_FILE.length).trim(); // Usuwamy identyfikator komendy
+      const firstSpaceIndex = content.indexOf(' '); // Znajdujemy pierwszą spację po nazwie pliku
+      if (firstSpaceIndex === -1) {
+          console.error('Invalid command format');
+          return;
+      }
+      const pathName = content.substring(0, firstSpaceIndex).trim(); // Nazwa pliku
+      const data = content.substring(firstSpaceIndex + 1).trim(); // Dane do dodania
+  
+      addToFile(pathName, data);
+  }
     
     
 });

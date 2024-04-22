@@ -1,6 +1,6 @@
 const fs = require("node:fs/promises");
 
-const { open, rename, unlink } = require("fs/promises");
+const { appendFile, rename, unlink } = require("fs/promises");
 
 
 
@@ -26,7 +26,7 @@ const { open, rename, unlink } = require("fs/promises");
     try {
       // we want to check whether or not we already have that file
       const existingFileHandle = await fs.open(path, "r");
-      existingFileHandel.close();
+      existingFileHandle.close();
       // we already have that file...
 
       return console.log(`The file ${filePath} already exists.`);
@@ -65,11 +65,10 @@ const { open, rename, unlink } = require("fs/promises");
 
   const addToFile = async (filePath, data) => {
     try {
-      const file = await open(filePath, 'a');
-      await file.write(data);
-      console.log(`Adding ${filePath}`);
+      await appendFile(filePath, data, { flag: "a"});
+      console.log(`Appending data to ${filePath}`);
     } catch (error) {
-      console.error
+      console.error(`Got an error trying to append the file: ${error.message}`)
     } finally {
       console.log(`Data: ${data}`);
     }
@@ -120,17 +119,16 @@ const { open, rename, unlink } = require("fs/promises");
         renameFile(oldPath, newPath);
       }
       
-    //add to file <path>
+    //add to file <path> <data>
     if (command.startsWith(ADD_TO_FILE)) {
-      const content = command.substring(ADD_TO_FILE.length).trim(); // Usuwamy identyfikator komendy
-      const firstSpaceIndex = content.indexOf(' '); // Znajdujemy pierwszą spację po nazwie pliku
+      const commandBody = command.substring(ADD_TO_FILE.length).trim(); 
+      const firstSpaceIndex = commandBody.indexOf(' ');
       if (firstSpaceIndex === -1) {
-          console.error('Invalid command format');
+          console.error('Invalid command format. Expecting: add to file <path> <data>');
           return;
       }
-      const pathName = content.substring(0, firstSpaceIndex).trim(); // Nazwa pliku
-      const data = content.substring(firstSpaceIndex + 1).trim(); // Dane do dodania
-  
+      const pathName = commandBody.substring(0, firstSpaceIndex).trim();
+      const data = commandBody.substring(firstSpaceIndex + 1).trim(); 
       addToFile(pathName, data);
   }
     

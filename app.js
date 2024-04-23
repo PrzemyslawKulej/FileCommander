@@ -128,6 +128,7 @@ const { appendFile, rename, unlink } = require("fs/promises");
           return;
       }
       const pathName = commandBody.substring(0, firstSpaceIndex).trim();
+      console.log(pathName);
       const data = commandBody.substring(firstSpaceIndex + 1).trim(); 
       addToFile(pathName, data);
   }
